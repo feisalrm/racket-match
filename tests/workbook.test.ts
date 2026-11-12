@@ -1,0 +1,26 @@
+import assert from 'node:assert/strict';
+import ExcelJS from 'exceljs';
+import {exportWorkbook,readWorkbook} from '../modules/admin/workbook';
+import {previewImport,bulkColumns} from '../modules/admin/bulk';
+import {seed} from '../modules/catalog/seed';
+import {upgradeCatalog} from '../modules/catalog/upgrade';
+const catalog=upgradeCatalog(seed),bytes=await exportWorkbook(catalog);
+const book=new ExcelJS.Workbook();await book.xlsx.load(bytes as any);
+const sheet=book.getWorksheet('Katalog')!,cols=bulkColumns(catalog);
+const cell=(id:string,key:string)=>sheet.getCell(catalog.rackets.findIndex(r=>r.id===id)+2,cols.indexOf(key)+1);
+assert.equal(cell('solinco-whiteout','beam').value,'21.7');assert.equal(cell('solinco-whiteout','beam').numFmt,'@');
+assert.equal(cell('babolat-boostdrive','head').value,105.4);assert.equal(cell('babolat-boostdrive','head').type,ExcelJS.ValueType.Number);assert.equal(cell('babolat-boostdrive','head').numFmt??'General','General');assert.equal(cell('wilson-blade','weight').value,300);assert.equal(cell('wilson-blade','weight').numFmt??'General','General');
+assert.equal(cell('wilson-tourslamlite','length').value,27.5);assert.equal(cell('wilson-blade','id').numFmt,'@');
+assert.equal(cell('wilson-blade','characterSource.checkedAt').value,'2026-11-03');assert.equal(cell('wilson-blade','characterSource.checkedAt').numFmt,'@');
+const buffer=(v:Uint8Array)=>v.buffer.slice(v.byteOffset,v.byteOffset+v.byteLength) as ArrayBuffer;
+const raw=await readWorkbook(buffer(bytes)),roundtrip=previewImport(catalog,raw,'xlsx');
+assert.deepEqual(roundtrip.errors,[]);assert.equal(roundtrip.changes.length,0);assert.deepEqual(roundtrip.catalog,catalog);
+// Both values survive as distinct values, with no automatic correction or rounding.
+cell('solinco-whiteout','beam').value='21.07';cell('babolat-boostdrive','head').value=105.04;
+const edited=previewImport(catalog,await readWorkbook(buffer(new Uint8Array(await book.xlsx.writeBuffer()))),'xlsx');
+assert.deepEqual(edited.errors,[]);assert.equal(edited.catalog.rackets.find(r=>r.id==='solinco-whiteout')!.beam,'21.07');assert.equal(edited.catalog.rackets.find(r=>r.id==='babolat-boostdrive')!.head,105.04);
+cell('wilson-tourslamlite','length').numFmt='hh:mm:ss';
+const timeBytes=new Uint8Array(await book.xlsx.writeBuffer());await assert.rejects(()=>readWorkbook(buffer(timeBytes)),/format jam/);
+cell('wilson-tourslamlite','length').numFmt='General';cell('wilson-blade','weight').value={formula:'300+5',result:305};
+const formulaBytes=new Uint8Array(await book.xlsx.writeBuffer());await assert.rejects(()=>readWorkbook(buffer(formulaBytes)),/rumus Excel/);
+console.log('PASS: typed XLSX complete roundtrip, exact decimals 21.7 vs 21.07 and 105.4 vs 105.04, ID/date text formats, formulas and time formats rejected');

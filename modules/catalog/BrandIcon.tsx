@@ -1,0 +1,2 @@
+const files:Record<string,string>={Wilson:'wilson.png',HEAD:'head.ico',Yonex:'yonex.ico',Babolat:'babolat.svg',Tecnifibre:'tecnifibre.png',Diadem:'diadem.png',Solinco:'solinco-mark.jpg'};
+export default function BrandIcon({brand}:{brand:string}){const file=files[brand];return file?<span className="brand-icon" aria-hidden="true"><img src={'/brands/'+file} alt="" width={16} height={16}/></span>:null;}

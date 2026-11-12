@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {isHighest} from '../modules/comparison/highlights';
+assert.equal(isHighest(305,[260,300,305,null]),true);
+assert.equal(isHighest(300,[260,300,305]),false);
+assert.equal(isHighest(8,[8,8,6]),true);
+assert.equal(isHighest(8,[8,8]),false);
+assert.equal(isHighest(8,[8,null,undefined]),false);
+assert.equal(isHighest(null,[null,8]),false);
+assert.equal(isHighest('16 × 19',['16 × 19','18 × 20']),false);
+console.log('PASS: row maxima, ties, equal rows and missing/non-numeric values');

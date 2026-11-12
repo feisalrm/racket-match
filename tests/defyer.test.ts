@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {defyerRackets,addDefyer} from '../modules/catalog/defyer';
+import {seed} from '../modules/catalog/seed';
+import {upgradeCatalog} from '../modules/catalog/upgrade';
+import {catalogSchema} from '../modules/catalog/validation';
+import {variantsFor} from '../modules/products/structure';
+const result=upgradeCatalog(seed),defyer=result.rackets.filter(r=>r.product?.family==='Defyer');
+assert.equal(defyer.length,4);assert.equal(variantsFor(result.rackets,defyer[0]).length,4);
+assert.deepEqual(defyer.map(r=>[r.weight,r.head,r.balance,r.pattern]),[[305,98,315,'16 × 20'],[300,100,325,'16 × 19'],[285,100,330,'16 × 19'],[265,100,330,'16 × 19']]);
+assert.equal(catalogSchema.safeParse(result).success,true);assert.deepEqual(upgradeCatalog(result),result);
+assert.ok(defyer.every(r=>r.basis==='unrated'&&!Object.keys(r.ratings).length&&r.evidence?.weight?.condition==='unstrung'&&r.evidence?.balance?.note));
+const edited=structuredClone(result);edited.rackets=edited.rackets.filter(r=>r.id!==defyer[0].id);assert.deepEqual(addDefyer(edited),edited);
+const prior={...result,datasetVersion:5};assert.equal(addDefyer(prior).rackets.length,result.rackets.length);
+console.log('PASS: four Defyer variants, official unstrung specs, source conflict notes, no ratings, schema and repeat-safe migration');

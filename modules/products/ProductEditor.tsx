@@ -1,0 +1,12 @@
+import {useId} from 'react';
+import {Layers,Info} from 'lucide-react';
+import {usePreferences} from '../preferences/Preferences';
+import type {Racket} from '../catalog/types';
+import {familyKey,normalized,variantsFor} from './structure';
+export default function ProductEditor({racket:r,rackets,onChange}:{racket:Racket;rackets:Racket[];onChange:(r:Racket)=>void}){
+ const {t}=usePreferences();const id=useId();const product=r.product;
+ const sameBrand=rackets.filter(x=>normalized(x.brand)===normalized(r.brand));
+ const families=[...new Set(sameBrand.flatMap(x=>x.product?.family?[x.product.family]:[]))].sort();
+ const generations=[...new Set(sameBrand.filter(x=>familyKey(x)===familyKey(r)).flatMap(x=>x.product?.generation?[x.product.generation]:[]))].sort();
+ return <fieldset className="product-editor"><legend><Layers size={17}/>{t('Keluarga, generasi & varian')}</legend><p>{t('Satu entri adalah satu varian dengan spesifikasi, skor, review, dan link pembelian masing-masing.')}</p><label className="checkbox-label"><input type="checkbox" checked={!!product} onChange={e=>onChange({...r,product:e.target.checked?{family:'',generation:'',variant:''}:null})}/>{t('Hubungkan ke keluarga raket')}</label>{product&&<><div className="form-grid"><label>{t('Keluarga raket')}<input required maxLength={80} list={id+'-families'} value={product.family} placeholder="Blade / EZONE / Nova" onChange={e=>onChange({...r,product:{...product,family:e.target.value}})}/><datalist id={id+'-families'}>{families.map(f=><option key={f} value={f}/>)}</datalist></label><label>{t('Generasi / edisi')}<input maxLength={80} list={id+'-generations'} value={product.generation} placeholder="v9 / 8th Gen / 2025" onChange={e=>onChange({...r,product:{...product,generation:e.target.value}})}/><datalist id={id+'-generations'}>{generations.map(g=><option key={g} value={g}/>)}</datalist></label><label>{t('Nama varian')}<input required maxLength={80} value={product.variant} placeholder="100 / 100L / 98 · 16×19" onChange={e=>onChange({...r,product:{...product,variant:e.target.value}})}/></label></div><p className="product-editor-note"><Info size={14}/>{t('Gunakan penamaan keluarga dan generasi yang sama untuk menghubungkan varian. Jika generasi belum diketahui, kosongkan; pemilih varian tidak akan menggabungkannya.')}</p>{product.generation&&<small>{variantsFor(rackets,r).filter(x=>x.id!==r.id).length} {t('varian terbit lain dalam generasi ini')}</small>}</>}</fieldset>
+}

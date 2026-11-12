@@ -1,0 +1,10 @@
+import type {CharacterKey,PlayerLevel,PlayingUse,ClassificationSource} from '../taxonomy/registry';
+export type ScoringGuide={procedure:string;low:string;mid:string;high:string;top:string};
+export type RatingSnapshot=ScoringGuide&{name:string;description:string};
+export type RatingContext={rubricVersion:string;reviewer:string;evaluatedAt:string;reference:string;sourceUrl:string;stringSetup:string;tension:string;court:string;modifications:string;sessions:number|null;reasons:Record<string,string>;snapshot?:Record<string,RatingSnapshot>};
+export type Attribute = { id:string; name:string; description:string; active:boolean;scoringGuide?:ScoringGuide };
+
+export type Evidence = { url:string; title:string; checkedAt:string; condition:'unstrung'|'strung'|'unspecified'|'not-applicable'; note:string };
+export type SpecKey = 'weight'|'weightStrung'|'head'|'balance'|'balanceStrung'|'pattern'|'length'|'beam'|'swingweight'|'stiffness'|'tensionMin'|'tensionMax';
+export type Racket = { importInfo?:{referenceUrls:string[];weightCondition:string;character:string;generationNote:string}; product?:import('../products/structure').ProductIdentity|null; photos?:{url:string;alt:string;sourceUrl:string}[]; affiliateLinks?:Partial<Record<'tokopedia'|'shopee'|'tiktok',string>>; characterTags?:CharacterKey[];playerLevels?:PlayerLevel[];playingUses?:PlayingUse[];characterSource?:ClassificationSource;audienceSource?:ClassificationSource; id:string; brand:string; name:string; year:number|null; weight:number|null; head:number|null; balance:number|null; pattern:string; level:string; color:string; status:'draft'|'published'|'archived'; basis:'demo'|'editorial'|'playtest'|'unrated'; source:string; notes:string; ratings:Record<string,number|null>;ratingContext?:RatingContext; length?:number|null; beam?:string; swingweight?:number|null; stiffness?:number|null; weightStrung?:number|null; balanceStrung?:number|null; tensionMin?:number|null; tensionMax?:number|null; evidence?:Partial<Record<SpecKey,Evidence>> };
+export type Catalog = { rackets:Racket[]; attributes:Attribute[]; datasetVersion?:number };

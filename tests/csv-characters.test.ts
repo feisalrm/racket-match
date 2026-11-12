@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import rows from '../modules/catalog/import-data';
+import {mapCsvCharacters,descriptorMap,applyCsvCharacters} from '../modules/taxonomy/csv-characters';
+import {seed} from '../modules/catalog/seed';
+import {upgradeCatalog} from '../modules/catalog/upgrade';
+import {catalogSchema} from '../modules/catalog/validation';
+assert.deepEqual(mapCsvCharacters('Power mudah; jangkauan; touch; stabilitas tinggi'),['power','forgiveness','feel','stability']);
+assert.deepEqual(mapCsvCharacters('Presisi; pola senar rapat; control'),['control']);
+assert.deepEqual(mapCsvCharacters('all-court; serbaguna; Belum ditetapkan'),[]);
+for(const row of rows)for(const phrase of row.karakter.split(';'))assert.ok(phrase.trim().toLowerCase() in descriptorMap,'Unmapped descriptor: '+phrase);
+const before=upgradeCatalog(seed);assert.equal(catalogSchema.safeParse(before).success,true);assert.deepEqual(applyCsvCharacters(before),before);
+assert.ok(before.rackets.filter(r=>r.importInfo&&r.characterTags?.length).length>160);
+for(const r of before.rackets.filter(r=>r.importInfo))assert.deepEqual(r.ratings,{});
+const saved=structuredClone(before);saved.rackets[0].characterTags=['comfort'];assert.deepEqual(applyCsvCharacters(saved),saved);
+console.log('PASS: CSV descriptor coverage, synonym mapping, no forced generic tags, unique categories, schema, scores unchanged and owner edits preserved');

@@ -1,0 +1,39 @@
+/* Product imagery keeps a soft, light canvas in dark mode so dark frames stay legible.
+   This deliberately follows the generated dark palette and survives regeneration. */
+:root[data-theme="dark"] .racket-picture{background:#eef0e8}
+:root[data-theme="dark"] .racket-picture.tone-1{background:#f1f0e6}
+:root[data-theme="dark"] .racket-picture.tone-2{background:#eaf0f1}
+:root[data-theme="dark"] .racket-picture.tone-3{background:#eeede7}
+:root[data-theme="dark"] .racket-picture .picture-caption,
+:root[data-theme="dark"] .racket-picture .model-year{color:#6f7b63}
+:root[data-theme="dark"] .racket-picture .level-badge{background:#ffffffd9;color:#526247;border-color:#d9e1d0}
+:root[data-theme="dark"] .racket-picture .select-racket,
+:root[data-theme="dark"] .racket-picture .favorite-racket{background:#fffffff0;color:#45633d;border-color:#b9c9ac}
+:root[data-theme="dark"] .racket-picture .select-racket.checked{background:#34573e;color:#fff;border-color:#34573e}
+:root[data-theme="dark"] .racket-picture .favorite-racket.saved{background:#faedef;color:#a45e73;border-color:#d9b4bf}
+:root[data-theme="dark"] .racket-picture .favorite-racket:hover{background:#fbf0f1;border-color:#c48e9e}
+:root[data-theme="dark"] .racket-picture .catalog-score-badge{background:#fafcf4ed;color:#345b34;border-color:#ccd9be}
+:root[data-theme="dark"] .racket-picture .catalog-score-badge strong small{color:#617352}
+:root[data-theme="dark"] .racket-picture .catalog-score-badge.no-score{color:#75816a}
+:root[data-theme="dark"] .hero-visual{background:#e3e9d5}
+:root[data-theme="dark"] .hero-visual .court-line{border-color:#ffffffb3}
+:root[data-theme="dark"] .hero-visual .visual-number{color:#ccd7bb}
+:root[data-theme="dark"] .hero-visual .floating-label{background:#fafcf3e8;border-color:#fff;color:#294332}
+:root[data-theme="dark"] .hero-visual .floating-label span:not(.label-icon),
+:root[data-theme="dark"] .hero-visual .visual-caption{color:#657651}
+:root[data-theme="dark"] .hero-visual .label-icon{border-color:#d9e1cf}
+:root[data-theme="dark"] .hero-visual .tennis-ball{background:radial-gradient(circle at 35% 25%,#e7f699,#aec656)}
+:root[data-theme="dark"] .hero-visual .tennis-ball:after{border-color:#f0f7d4}
+:root[data-theme="dark"] .gallery-main,
+:root[data-theme="dark"] .gallery-placeholder,
+:root[data-theme="dark"] .gallery-thumbnails button,
+:root[data-theme="dark"] .photo-lightbox>img,
+:root[data-theme="dark"] .photo-editor-row>img{background:#f2f4ec;border-radius:10px}
+:root[data-theme="dark"] .gallery-main>img{mix-blend-mode:normal}
+:root[data-theme="dark"] .gallery-main>span,
+:root[data-theme="dark"] .gallery-placeholder small{color:#5c714d}
+:root[data-theme="dark"] .gallery-thumbnails button{border-color:#c5d2b6;border-radius:5px}
+:root[data-theme="dark"] .gallery-thumbnails button[aria-pressed=true]{border-color:#a7c58d;box-shadow:0 0 0 2px #a7c58d}
+:root[data-theme="dark"] .comparison-table th>.racket-art,
+:root[data-theme="dark"] .picker-racket>.racket-art,
+:root[data-theme="dark"] .match-result-identity>.racket-art{background:#eef0e8;border-radius:10px}
